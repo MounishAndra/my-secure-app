@@ -1,13 +1,3 @@
-# No `build:` at the top!
-name: build-and-deploy-main
-description: Trigger with private worker pool
-
-github:
-  owner: MounishAndra
-  name: my-secure-app
-  push:
-    branch: '.*'
-
 steps:
   - name: 'gcr.io/cloud-builders/gcloud'
     id: Copy secure file from VM
