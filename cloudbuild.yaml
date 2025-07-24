@@ -23,17 +23,11 @@ build:
 
     - name: 'gcr.io/cloud-builders/docker'
       id: Build Docker Image
-      args:
-        [
-          'build',
-          '-t', 'us-central1-docker.pkg.dev/amjad-id-2/microservices-repo/my-app',
-          '.'
-        ]
+      args: ['build', '-t', 'us-central1-docker.pkg.dev/amjad-id-2/microservices-repo/my-app', '.']
 
     - name: 'gcr.io/cloud-builders/docker'
       id: Push Docker Image
-      args:
-        ['push', 'us-central1-docker.pkg.dev/amjad-id-2/microservices-repo/my-app']
+      args: ['push', 'us-central1-docker.pkg.dev/amjad-id-2/microservices-repo/my-app']
 
     - name: 'gcr.io/cloud-builders/gcloud'
       id: Deploy to Cloud Run
@@ -48,6 +42,7 @@ build:
 
   options:
     logging: CLOUD_LOGGING_ONLY
+    default_logs_bucket_behavior: REGIONAL_USER_OWNED_BUCKET
     pool:
       name: projects/amjad-id-2/locations/us-central1/workerPools/mou-private-workr-pool
 
