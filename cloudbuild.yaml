@@ -1,45 +1,24 @@
 steps:
-  # Step 1: Securely copy the config file from the private VM using IAP Tunnel
-  - name: gcr.io/cloud-builders/gcloud
-    id: Copy config from VM
-    entrypoint: bash
-    args:
-      - -c
-      - |
-        gcloud compute scp \
-          --tunnel-through-iap \
-          --zone=us-central1-a \
-          mounish@no-public-ip-vm:/home/mounish/secure-deps/app-config.json \
-          ./app-config.json
-
-  # Step 2: Build Docker image using local Dockerfile
-  - name: gcr.io/cloud-builders/docker
-    id: Build image
-    args: [
-      'build', '-t', 'us-central1-docker.pkg.dev/amjad-id-2/microservices-repo/my-app', '.'
-    ]
-
-  # Step 3: Push Docker image to Artifact Registry
-  - name: gcr.io/cloud-builders/docker
-    id: Push image
-    args: [
-      'push', 'us-central1-docker.pkg.dev/amjad-id-2/microservices-repo/my-app'
-    ]
-
-  # Step 4: Deploy to Cloud Run
-  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+  - name: 'gcr.io/cloud-builders/docker'
+    id: Build Docker Image
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/amjad-id-2/microservices-repo/my-app', '.']
+  - name: 'gcr.io/cloud-builders/docker'
+    id: Push Docker Image
+    args: ['push', 'us-central1-docker.pkg.dev/amjad-id-2/microservices-repo/my-app']
+  - name: 'gcr.io/cloud-builders/gcloud'
     id: Deploy to Cloud Run
-    entrypoint: gcloud
-    args: [
-      'run', 'deploy', 'my-secure-service',
-      '--image', 'us-central1-docker.pkg.dev/amjad-id-2/microservices-repo/my-app',
-      '--region', 'us-central1',
-      '--platform', 'managed',
-      '--allow-unauthenticated'
-    ]
-
-options:
-  pool:
-    name: projects/amjad-id-2/locations/us-central1/workerPools/mou-private-workr-pool
+    args:
+      [
+        'run', 'deploy', 'my-secure-service',
+        '--image', 'us-central1-docker.pkg.dev/amjad-id-2/microservices-repo/my-app',
+        '--region', 'us-central1',
+        '--platform', 'managed',
+        '--allow-unauthenticated'
+      ]
 
 serviceAccount: cloud-build-service@amjad-id-2.iam.gserviceaccount.com
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  pool:
+    name: projects/amjad-id-2/locations/us-central1/workerPools/mou-private-workr-pool
