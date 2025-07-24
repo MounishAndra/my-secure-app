@@ -1,11 +1,12 @@
-name: build-and-deploy-main # <--- Keep this
-description: Trigger with private worker pool # <--- Keep this
-github: # <--- Keep this
+name: build-and-deploy-main
+description: Trigger with private worker pool
+github:
   owner: MounishAndra
   name: my-secure-app
   push:
     branch: '.*'
-build: # <--- This is where your provided snippet starts
+
+build:
   steps:
     - name: 'gcr.io/cloud-builders/docker'
       id: Build Docker Image
@@ -23,11 +24,11 @@ build: # <--- This is where your provided snippet starts
           '--platform', 'managed',
           '--allow-unauthenticated'
         ]
-  options: # <--- This options block is correctly nested under 'build'
+  options:
     logging: CLOUD_LOGGING_ONLY
     pool:
       name: projects/amjad-id-2/locations/us-central1/workerPools/mou-private-workr-pool
-serviceAccount: projects/amjad-id-2/serviceAccounts/cloud-build-service@amjad-id-2.iam.gserviceaccount.com # <--- This serviceAccount is correctly at the top-level
+  serviceAccount: projects/amjad-id-2/serviceAccounts/cloud-build-service@amjad-id-2.iam.gserviceaccount.com
 
 options:
   logging: CLOUD_LOGGING_ONLY
